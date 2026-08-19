@@ -76,11 +76,11 @@ A:CreateWindow
 
 {
 
-Title="Salmon x Hub | Block spin",
+Title="Kaiser Hub | Block spin",
 
-Icon="rbxassetid://110538801742199",
+Icon="rbxassetid://108952141737523",
 
-Author="[🔫]-Block Spin | discord.gg/z4x4TE6gGT",
+Author="[🔫]-Block Spin",
 
 Folder="Boss",
 
@@ -100,9 +100,9 @@ KeyCode=Enum.KeyCode.G
 
 Window:EditOpenButton({
 
-    Title = "Salmon x Hub | Block spin",
+    Title = "Kaiser x Hub",
 
-    Icon = "rbxassetid://110538801742199",
+    Icon = "rbxassetid://108952141737523",
 
     CornerRadius = UDim.new(0,16),
 
@@ -110,9 +110,9 @@ Window:EditOpenButton({
 
     Color = ColorSequence.new( -- gradient
 
-        Color3.fromHex("FF0F7B"), 
+        Color3.fromHex("3B82F6"), 
 
-        Color3.fromHex("F89B29")
+        Color3.fromHex("0F172A")
 
     ),
 
@@ -128,11 +128,11 @@ Window:EditOpenButton({
 
 Window:Tag({
 
-    Title = "PVP | Paid",
+    Title = "Blockspin",
 
-    Icon = "github",
+    Icon = "crown",
 
-    Color = Color3.fromHex("#30ff6a"),
+    Color = Color3.fromHex("ef4444"),
 
     Radius = 13,
 
