@@ -1,5 +1,5 @@
 -- ============================================================
--- KAISER HUB — PERSISTENT KEY SYSTEM (GOD EDITION UI STYLE)
+-- KAISER HUB — PERSISTENT KEY SYSTEM (SPECIFIC PLAYER LOCK)
 -- Target: Client / Mobile & PC Compatible
 -- ============================================================
 
@@ -18,9 +18,7 @@ if CoreGui:FindFirstChild("KaiserHub_SystemUI") then
     CoreGui.KaiserHub_SystemUI:Destroy()
 end
 
--- ============================================================
--- COLOR PALETTE & STYLES (MATCHED DESIGN)
--- ============================================================
+-- Color Palette
 local COLORS = {
     BG_DARK = Color3.fromRGB(18, 18, 24),
     BG_CARD = Color3.fromRGB(24, 24, 32),
@@ -43,19 +41,8 @@ local function createInstance(class, props)
     return obj
 end
 
-local function tween(obj, props, duration, style, direction)
-    local tweenInfo = TweenInfo.new(
-        duration or 0.35, 
-        style or Enum.EasingStyle.Quart, 
-        direction or Enum.EasingDirection.Out
-    )
-    local t = TweenService:Create(obj, tweenInfo, props)
-    t:Play()
-    return t
-end
-
 -- ============================================================
--- FILE DATA MANAGEMENT (PERSISTENT SYSTEM)
+-- FILE DATA MANAGEMENT
 -- ============================================================
 local KeyDatabase = {}
 
@@ -71,7 +58,8 @@ local function LoadData()
         KeyDatabase = {
             ["VIP-SUCCESS-KAISERHUB-KEY-8872-PRO"] = {
                 DurationSeconds = 3 * 86400,
-                CreatedAt = os.time()
+                CreatedAt = os.time(),
+                AllowedPlayer = "" -- เว้นว่างไว้ = ให้ทุกเครื่อง/ทุกคนใช้ได้
             }
         }
     end
@@ -87,9 +75,17 @@ end
 
 LoadData()
 
-local function CheckKeyStatus(key)
+local function CheckKeyStatus(key, playerName)
     local data = KeyDatabase[key]
     if not data then return "NOT_FOUND", 0 end
+    
+    -- ตรวจสอบการล็อกชื่อผู้เล่น
+    if data.AllowedPlayer and data.AllowedPlayer ~= "" then
+        if string.lower(data.AllowedPlayer) ~= string.lower(playerName) then
+            return "USER_MISMATCH", 0
+        end
+    end
+
     local expireTime = data.CreatedAt + data.DurationSeconds
     local timeLeft = expireTime - os.time()
     return (timeLeft <= 0) and "EXPIRED" or "VALID", math.max(0, timeLeft)
@@ -108,27 +104,16 @@ local ScreenGui = createInstance("ScreenGui", {
 -- ============================================================
 if LocalPlayer.Name ~= ADMIN_NAME then
     local MainFrame = createInstance("Frame", {
-        Name = "MainFrame",
-        Parent = ScreenGui,
-        BackgroundColor3 = COLORS.BG_CARD,
-        BorderSizePixel = 0,
-        AnchorPoint = Vector2.new(0.5, 0.5),
-        Position = UDim2.new(0.5, 0, 0.5, 0),
-        Size = UDim2.new(0, 350, 0, 280),
-        Active = true,
-        Draggable = true,
-        ZIndex = 1,
+        Name = "MainFrame", Parent = ScreenGui,
+        BackgroundColor3 = COLORS.BG_CARD, BorderSizePixel = 0,
+        AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0),
+        Size = UDim2.new(0, 350, 0, 280), Active = true, Draggable = true, ZIndex = 1,
     })
     createInstance("UICorner", { CornerRadius = UDim.new(0, 16), Parent = MainFrame })
 
     local GlowFrame = createInstance("Frame", {
-        Parent = MainFrame,
-        BackgroundColor3 = COLORS.PRIMARY,
-        BackgroundTransparency = 0.85,
-        BorderSizePixel = 0,
-        Position = UDim2.new(0, -2, 0, -2),
-        Size = UDim2.new(1, 4, 1, 4),
-        ZIndex = 0,
+        Parent = MainFrame, BackgroundColor3 = COLORS.PRIMARY, BackgroundTransparency = 0.85,
+        BorderSizePixel = 0, Position = UDim2.new(0, -2, 0, -2), Size = UDim2.new(1, 4, 1, 4), ZIndex = 0,
     })
     createInstance("UICorner", { CornerRadius = UDim.new(0, 18), Parent = GlowFrame })
 
@@ -137,11 +122,8 @@ if LocalPlayer.Name ~= ADMIN_NAME then
     if camera and camera.ViewportSize.X < 600 then UIScale.Scale = 0.85 end
 
     local TopBar = createInstance("Frame", {
-        Parent = MainFrame,
-        BackgroundColor3 = Color3.fromRGB(28, 28, 38),
-        BorderSizePixel = 0,
-        Size = UDim2.new(1, 0, 0, 50),
-        ZIndex = 2,
+        Parent = MainFrame, BackgroundColor3 = Color3.fromRGB(28, 28, 38), BorderSizePixel = 0,
+        Size = UDim2.new(1, 0, 0, 50), ZIndex = 2,
     })
     createInstance("UICorner", { CornerRadius = UDim.new(0, 16), Parent = TopBar })
 
@@ -184,12 +166,6 @@ if LocalPlayer.Name ~= ADMIN_NAME then
     })
     createInstance("UICorner", { CornerRadius = UDim.new(0, 10), Parent = InputContainer })
 
-    local InputBorder = createInstance("Frame", {
-        Parent = InputContainer, BackgroundColor3 = COLORS.PRIMARY, BackgroundTransparency = 0.7,
-        BorderSizePixel = 0, Position = UDim2.new(0, -1, 0, -1), Size = UDim2.new(1, 2, 1, 2), ZIndex = 1,
-    })
-    createInstance("UICorner", { CornerRadius = UDim.new(0, 11), Parent = InputBorder })
-
     local KeyBox = createInstance("TextBox", {
         Parent = InputContainer, BackgroundTransparency = 1, BorderSizePixel = 0,
         Position = UDim2.new(0, 14, 0, 0), Size = UDim2.new(1, -28, 1, 0),
@@ -214,7 +190,7 @@ if LocalPlayer.Name ~= ADMIN_NAME then
         if isProcessing then return end
         isProcessing = true
         local enteredKey = KeyBox.Text:gsub("%s+", "")
-        local status = CheckKeyStatus(enteredKey)
+        local status = CheckKeyStatus(enteredKey, LocalPlayer.Name)
 
         if status == "VALID" then
             SubmitBtn.Text = "คีย์ถูกต้องคับ!"
@@ -224,6 +200,14 @@ if LocalPlayer.Name ~= ADMIN_NAME then
             task.spawn(function() loadstring(game:HttpGet(SCRIPT_URL))() end)
             task.wait(1.5)
             ScreenGui:Destroy()
+        elseif status == "USER_MISMATCH" then
+            SubmitBtn.Text = "คีย์นี้ไม่ใช่ของคุณ!"
+            SubmitBtn.BackgroundColor3 = COLORS.ERROR
+            StatusLabel.Text = "⚠ คีย์นี้ถูกล็อกไว้สำหรับผู้เล่นอื่น"
+            StatusLabel.TextColor3 = COLORS.ERROR
+            task.wait(1.5)
+            SubmitBtn.Text = "ยืนยันคีย์" SubmitBtn.BackgroundColor3 = COLORS.PRIMARY
+            isProcessing = false
         elseif status == "EXPIRED" then
             SubmitBtn.Text = "คีย์นี้หมดอายุแล้ว!"
             SubmitBtn.BackgroundColor3 = COLORS.ERROR
@@ -254,7 +238,7 @@ local AdminFrame = createInstance("Frame", {
     Name = "AdminFrame", Parent = ScreenGui,
     BackgroundColor3 = COLORS.BG_CARD, BorderSizePixel = 0,
     AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0),
-    Size = UDim2.new(0, 460, 0, 380), Active = true, Draggable = true, ZIndex = 1,
+    Size = UDim2.new(0, 480, 0, 420), Active = true, Draggable = true, ZIndex = 1,
 })
 createInstance("UICorner", { CornerRadius = UDim.new(0, 16), Parent = AdminFrame })
 
@@ -300,11 +284,11 @@ CloseBtn.MouseButton1Click:Connect(function() ScreenGui:Destroy() end)
 -- Key List ScrollFrame
 local ScrollList = createInstance("ScrollingFrame", {
     Parent = AdminFrame, BackgroundColor3 = COLORS.BG_DARK, BackgroundTransparency = 0.3,
-    BorderSizePixel = 0, Position = UDim2.new(0, 20, 0, 62), Size = UDim2.new(1, -40, 0, 180),
+    BorderSizePixel = 0, Position = UDim2.new(0, 20, 0, 62), Size = UDim2.new(1, -40, 0, 170),
     CanvasSize = UDim2.new(0, 0, 0, 0), ScrollBarThickness = 4, ScrollBarImageColor3 = COLORS.PRIMARY, ZIndex = 2,
 })
 createInstance("UICorner", { CornerRadius = UDim.new(0, 10), Parent = ScrollList })
-local UIListLayout = createInstance("UIListLayout", { Parent = ScrollList, SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 6) })
+createInstance("UIListLayout", { Parent = ScrollList, SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 6) })
 
 local function RefreshView()
     for _, child in ipairs(ScrollList:GetChildren()) do
@@ -314,9 +298,10 @@ local function RefreshView()
     local count = 0
     for k, v in pairs(KeyDatabase) do
         count = count + 1
-        local status, timeLeft = CheckKeyStatus(k)
+        local status, timeLeft = CheckKeyStatus(k, LocalPlayer.Name)
         local hoursLeft = math.floor(timeLeft / 3600)
         local minsLeft = math.floor((timeLeft % 3600) / 60)
+        local userTarget = (v.AllowedPlayer and v.AllowedPlayer ~= "") and (" | ผู้ใช้: " .. v.AllowedPlayer) or " | ผู้ใช้: ทุกคน"
 
         local ItemFrame = createInstance("Frame", {
             Parent = ScrollList, Size = UDim2.new(1, -8, 0, 36),
@@ -325,15 +310,15 @@ local function RefreshView()
         })
         createInstance("UICorner", { CornerRadius = UDim.new(0, 8), Parent = ItemFrame })
 
-        local ItemStroke = createInstance("UIStroke", {
+        createInstance("UIStroke", {
             Thickness = 1, Color = (SelectedKey == k) and COLORS.PRIMARY or COLORS.BORDER, Parent = ItemFrame,
         })
 
         local SelectBtn = createInstance("TextButton", {
             Parent = ItemFrame, BackgroundTransparency = 1, Position = UDim2.new(0, 10, 0, 0),
             Size = UDim2.new(0.82, 0, 1, 0), Font = Enum.Font.Code,
-            TextColor3 = (status == "VALID") and COLORS.SUCCESS or COLORS.ERROR, TextSize = 11,
-            Text = string.format("[%s] Key: %s | เหลือ: %dชม.%dน.", status, k, hoursLeft, minsLeft),
+            TextColor3 = (status == "EXPIRED") and COLORS.ERROR or COLORS.SUCCESS, TextSize = 10,
+            Text = string.format("[%s] Key: %s%s | เหลือ: %dชม.%dน.", (status == "EXPIRED" and "EXPIRED" or "VALID"), k, userTarget, hoursLeft, minsLeft),
             TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 4,
         })
 
@@ -357,29 +342,43 @@ local function RefreshView()
     ScrollList.CanvasSize = UDim2.new(0, 0, 0, count * 42)
 end
 
--- Controls Box
+-- ช่องกรอกชื่อคีย์
 local KeyInputContainer = createInstance("Frame", {
     Parent = AdminFrame, BackgroundColor3 = COLORS.BG_INPUT, BorderSizePixel = 0,
-    Position = UDim2.new(0, 20, 0, 252), Size = UDim2.new(0.58, 0, 0, 36), ZIndex = 2,
+    Position = UDim2.new(0, 20, 0, 242), Size = UDim2.new(0.42, 0, 0, 36), ZIndex = 2,
 })
 createInstance("UICorner", { CornerRadius = UDim.new(0, 8), Parent = KeyInputContainer })
 
 local KeyInput = createInstance("TextBox", {
     Parent = KeyInputContainer, BackgroundTransparency = 1, Position = UDim2.new(0, 10, 0, 0),
     Size = UDim2.new(1, -20, 1, 0), Font = Enum.Font.Gotham, PlaceholderText = "ชื่อคีย์ใหม่...",
-    Text = "", TextColor3 = COLORS.TEXT_WHITE, TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 3,
+    Text = "", TextColor3 = COLORS.TEXT_WHITE, TextSize = 11, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 3,
 })
 
+-- ช่องกรอกชื่อผู้เล่นที่ระบุ
+local PlayerInputContainer = createInstance("Frame", {
+    Parent = AdminFrame, BackgroundColor3 = COLORS.BG_INPUT, BorderSizePixel = 0,
+    Position = UDim2.new(0.45, 0, 0, 242), Size = UDim2.new(0.33, 0, 0, 36), ZIndex = 2,
+})
+createInstance("UICorner", { CornerRadius = UDim.new(0, 8), Parent = PlayerInputContainer })
+
+local PlayerInput = createInstance("TextBox", {
+    Parent = PlayerInputContainer, BackgroundTransparency = 1, Position = UDim2.new(0, 10, 0, 0),
+    Size = UDim2.new(1, -20, 1, 0), Font = Enum.Font.Gotham, PlaceholderText = "ชื่อผู้เล่น (ว่าง=ทุกคน)",
+    Text = "", TextColor3 = COLORS.TEXT_WHITE, TextSize = 10, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 3,
+})
+
+-- ช่องกรอกจำนวนชั่วโมง
 local HourInputContainer = createInstance("Frame", {
     Parent = AdminFrame, BackgroundColor3 = COLORS.BG_INPUT, BorderSizePixel = 0,
-    Position = UDim2.new(0.64, 0, 0, 252), Size = UDim2.new(0.32, 0, 0, 36), ZIndex = 2,
+    Position = UDim2.new(0.80, 0, 0, 242), Size = UDim2.new(0.16, 0, 0, 36), ZIndex = 2,
 })
 createInstance("UICorner", { CornerRadius = UDim.new(0, 8), Parent = HourInputContainer })
 
 local HourInput = createInstance("TextBox", {
-    Parent = HourInputContainer, BackgroundTransparency = 1, Position = UDim2.new(0, 10, 0, 0),
-    Size = UDim2.new(1, -20, 1, 0), Font = Enum.Font.Gotham, PlaceholderText = "จำนวนชม. ...",
-    Text = "", TextColor3 = COLORS.TEXT_WHITE, TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 3,
+    Parent = HourInputContainer, BackgroundTransparency = 1, Position = UDim2.new(0, 5, 0, 0),
+    Size = UDim2.new(1, -10, 1, 0), Font = Enum.Font.Gotham, PlaceholderText = "จำนวนชม.",
+    Text = "", TextColor3 = COLORS.TEXT_WHITE, TextSize = 10, TextXAlignment = Enum.TextXAlignment.Center, ZIndex = 3,
 })
 
 local function CreateActionBtn(text, pos, size, bg)
@@ -392,18 +391,23 @@ local function CreateActionBtn(text, pos, size, bg)
     return btn
 end
 
-local AddKeyBtn = CreateActionBtn("+ สร้างคีย์", UDim2.new(0, 20, 0, 298), UDim2.new(0.3, 0, 0, 32), COLORS.SUCCESS)
-local AddTimeBtn = CreateActionBtn("+ เพิ่มเวลา", UDim2.new(0.35, 0, 0, 298), UDim2.new(0.3, 0, 0, 32), COLORS.PRIMARY)
-local SubTimeBtn = CreateActionBtn("- ลดเวลา", UDim2.new(0.7, 0, 0, 298), UDim2.new(0.26, 0, 0, 32), Color3.fromRGB(200, 120, 0))
+local AddKeyBtn = CreateActionBtn("+ สร้างคีย์", UDim2.new(0, 20, 0, 288), UDim2.new(0.3, 0, 0, 34), COLORS.SUCCESS)
+local AddTimeBtn = CreateActionBtn("+ เพิ่มเวลา", UDim2.new(0.35, 0, 0, 288), UDim2.new(0.3, 0, 0, 34), COLORS.PRIMARY)
+local SubTimeBtn = CreateActionBtn("- ลดเวลา", UDim2.new(0.7, 0, 0, 288), UDim2.new(0.26, 0, 0, 34), Color3.fromRGB(200, 120, 0))
 
-local RunAdminBtn = CreateActionBtn("🚀 รันสคริปต์ (ADMIN PASS)", UDim2.new(0, 20, 0, 338), UDim2.new(0.91, 0, 0, 32), COLORS.PRIMARY)
+local RunAdminBtn = CreateActionBtn("🚀 รันสคริปต์ (ADMIN PASS)", UDim2.new(0, 20, 0, 332), UDim2.new(0.91, 0, 0, 34), COLORS.PRIMARY)
 
 AddKeyBtn.MouseButton1Click:Connect(function()
     local k = KeyInput.Text:gsub("%s+", "")
+    local p = PlayerInput.Text:gsub("%s+", "")
     local h = tonumber(HourInput.Text)
     if k ~= "" and h then
-        KeyDatabase[k] = { DurationSeconds = h * 3600, CreatedAt = os.time() }
-        SaveData() RefreshView() KeyInput.Text = "" HourInput.Text = ""
+        KeyDatabase[k] = { 
+            DurationSeconds = h * 3600, 
+            CreatedAt = os.time(),
+            AllowedPlayer = p -- บันทึกชื่อผู้เล่น (ถ้าไม่พิมพ์จะถือว่าเป็นค่าว่าง "")
+        }
+        SaveData() RefreshView() KeyInput.Text = "" PlayerInput.Text = "" HourInput.Text = ""
     end
 end)
 
@@ -429,4 +433,3 @@ RunAdminBtn.MouseButton1Click:Connect(function()
 end)
 
 RefreshView()
-
