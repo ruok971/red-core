@@ -30,7 +30,7 @@ end
 
 -- ตรวจสอบและดำเนินการ
 if checkWhitelist(LocalPlayer) then
-    notify("ระบบ Whitelist", "คุณได้รับอนุญาตแล้ว")
+    notify("ระบบตรวจสอบควย59", "คุณได้รับอนุญาตแล้ว")
     loadstring(game:HttpGet("https://pastebin.com/raw/5u8Uewj7"))()
 else
     notify("ระบบ Whitelist", "คุณไม่ได้รับอนุญาตในการใช้สคริปต์")
