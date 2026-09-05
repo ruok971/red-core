@@ -1026,7 +1026,40 @@ do
 	end 
 
 	do
-local MiscTab = Tabs.Miscellaneous
+local General = Section(Tabs.Pvp, "ทั่วไป")
+
+		Tg(false, General, "ตัวช่วยในการล็อคหัว ด้วย Octagon FOV", "ล็อคหัว (Silent Aim)", "AimAssiant")
+		Tg(false, General, "ยิงทะลุกําแพง", "ยิงทะลุ", "WallBang")
+		Tg(false, General, "ยิงรอบเดียวจะแถมยิงอีก 1 รอบการเป็น 2 รอบ", "ยิง x2", "MultiShoot")
+		Tg(false, General, "ถ้าเพื่อนเป็นเป้าหมาย ระบบจะไม่สนใจละข้ามทันที", "ไม่ล็อคเพื่อน", "FriendIngore")
+		Dropdown(General, "เลือกส่วนที่ต้องการยิง", "PartTargetSelected", {"Head", "HumanoidRootPart"}, false)
+		Slider(General, "ขนาด FOV แปดเหลี่ยม", 1, 10, 500, 120, "PovSize")
+		Slider(General, "ระยะยิงสูงสุด (Max Aim Distance)", 10, 50, 5000, 1000, "MaxAimDistance")
+
+		local GunModifies = Section(Tabs.Pvp, "ปรับแต่งปืน")
+		Button(GunModifies, "ปรับแต่ง", "ปรับแต่งปืนที่คุณกําลังถือโดยทันที", function()
+			if not Character:FindFirstChildWhichIsA('Tool') then return end  
+			
+			for _, GunExampleObject in pairs(ReplicatedStorage.Items.gun:GetChildren()) do  
+				if Character:FindFirstChildWhichIsA('Tool').Name == GunExampleObject.Name then  
+					Character:FindFirstChildWhichIsA('Tool'):SetAttribute("fire_rate", (c().FireRateGun or Character:FindFirstChildWhichIsA('Tool'):GetAttribute("fire_rate")))
+					Character:FindFirstChildWhichIsA('Tool'):SetAttribute("accuracy", (c().AccuracyGun or Character:FindFirstChildWhichIsA('Tool'):GetAttribute("accuracy")))
+					Character:FindFirstChildWhichIsA('Tool'):SetAttribute("Recoil", (c().RecoilGun or Character:FindFirstChildWhichIsA('Tool'):GetAttribute("Recoil")))
+					Character:FindFirstChildWhichIsA('Tool'):SetAttribute("Durability", (c().DurabilityGun or Character:FindFirstChildWhichIsA('Tool'):GetAttribute("Durability")))
+					Character:FindFirstChildWhichIsA('Tool'):SetAttribute("automatic", (c().AutomaticGun or Character:FindFirstChildWhichIsA('Tool'):GetAttribute("automatic")))
+				end
+			end
+		end)
+
+		Tg(false, GunModifies, "โหมดปืนออโต้ ยิงรัว", "โหมดออโต้", "AutomaticGun")
+		Slider(GunModifies, "อัตราการยิง", 1, 100, 3000, 1000, "FireRateGun")
+		Slider(GunModifies, "แรงดีด", 0.1, 0.3, 10, 0, "RecoilGun")
+		Slider(GunModifies, "ความแม่น", 0.01, 0, 1, 1, "AccuracyGun")
+		Slider(GunModifies, "ความทนทาน", 1, 100, 3000, 1000, "DurabilityGun")
+	end
+
+	do
+		local MiscTab = Tabs.Miscellaneous
 
 		-- เพิ่มปุ่ม Skip Animation (Checkbox/Toggle)
 		local EnabledSkip = false
