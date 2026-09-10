@@ -3249,9 +3249,9 @@ task.spawn(function()
 end)
 local WindUINew = loadstring(game:HttpGet("https://raw.githubusercontent.com/Footagesus/WindUI/main/dist/main.lua"))()
 local Window = WindUINew:CreateWindow({
-    Title = "Vyxion Hub | Paid 💸",
-    Icon = "rbxassetid://134578876660336",
-    Author = "Vyxion Hub | Block Spin",
+    Title = "Kaiser Hub | Paid 💸",
+    Icon = "rbxassetid://108952141737523",
+    Author = "Kaiser Hub | Block Spin",
     Folder = "Pig dev",
     Size = UDim2.fromOffset(580, 460),
     MinSize = Vector2.new(560, 350),
@@ -3283,11 +3283,11 @@ Window:EditOpenButton({
 do
     local TweenService = cloneref(game:GetService("TweenService"))
     local UIS = cloneref(game:GetService("UserInputService"))
-    local LOGO_ID = "rbxassetid://134578876660336"
-    local LOGO_SIZE_IDLE   = UDim2.fromOffset(90, 90)
-    local LOGO_SIZE_HOVER  = UDim2.fromOffset(104, 104)
-    local LOGO_SIZE_CLICK  = UDim2.fromOffset(76, 76)
-    local LOGO_SIZE_BOUNCE = UDim2.fromOffset(114, 114)
+    local LOGO_ID = "rbxassetid://108952141737523"
+    local LOGO_SIZE_IDLE   = UDim2.fromOffset(50, 50)
+    local LOGO_SIZE_HOVER  = UDim2.fromOffset(58, 58)
+    local LOGO_SIZE_CLICK  = UDim2.fromOffset(42, 42)
+    local LOGO_SIZE_BOUNCE = UDim2.fromOffset(62, 62)
     local logoGui = InstanceNew("ScreenGui")
     logoGui.Name = "SynixiaLogoToggle"
     logoGui.ResetOnSpawn = false
