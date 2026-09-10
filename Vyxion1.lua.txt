@@ -104,7 +104,7 @@ do
 			bestLen = #key
 		end
 	end
-	local LABEL_LOGO = "rbxassetid://134578876660336"
+	local LABEL_LOGO = "rbxassetid://108952141737523"
 	local TweenService = cloneref(game:GetService("TweenService"))
 	local splashGui = InstanceNew("ScreenGui")
 	splashGui.Name = "PigHubSplash"
@@ -3284,10 +3284,10 @@ do
     local TweenService = cloneref(game:GetService("TweenService"))
     local UIS = cloneref(game:GetService("UserInputService"))
     local LOGO_ID = "rbxassetid://108952141737523"
-    local LOGO_SIZE_IDLE   = UDim2.fromOffset(50, 50)
-    local LOGO_SIZE_HOVER  = UDim2.fromOffset(58, 58)
-    local LOGO_SIZE_CLICK  = UDim2.fromOffset(42, 42)
-    local LOGO_SIZE_BOUNCE = UDim2.fromOffset(62, 62)
+    local LOGO_SIZE_IDLE   = UDim2.fromOffset(35, 35)
+    local LOGO_SIZE_HOVER  = UDim2.fromOffset(45, 45)
+    local LOGO_SIZE_CLICK  = UDim2.fromOffset(40, 40)
+    local LOGO_SIZE_BOUNCE = UDim2.fromOffset(55, 55)
     local logoGui = InstanceNew("ScreenGui")
     logoGui.Name = "SynixiaLogoToggle"
     logoGui.ResetOnSpawn = false
